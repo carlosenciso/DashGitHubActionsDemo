@@ -10,8 +10,9 @@ df = pd.DataFrame({
     "City": ["SF", "SF", "SF", "NYC", "NYC", "NYC"]
 })
 
-# Create Dash app
+# Create Dash app - IMPORTANTE: Define 'server' para Render
 app = dash.Dash(__name__)
+server = app.server  # ← ESTA LÍNEA ES CRÍTICA PARA RENDER
 
 app.layout = html.Div([
     html.H1("My GitHub Actions Dashboard", style={'textAlign': 'center'}),
@@ -34,5 +35,5 @@ def update_graph(selected_city):
     fig = px.bar(filtered_df, x="Fruit", y="Amount", title=f"Fruit Amounts in {selected_city}")
     return fig
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8050)
+# IMPORTANTE: Elimina el if __name__ block para Render
+# Render usa gunicorn y no necesita este bloque

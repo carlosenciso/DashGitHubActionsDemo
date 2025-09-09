@@ -1,0 +1,29 @@
+name: Deploy to Render
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+          
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+        
+      - name: Test app
+        run: |
+          # Verifica que la app funcione
+          python -c "import app; print('✅ App importada correctamente')"
+        
+      - name: Notify success
+        run: echo "🎉 App lista para deploy en Render!"

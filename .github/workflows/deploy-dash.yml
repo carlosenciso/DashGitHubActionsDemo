@@ -1,58 +1,58 @@
-name: Deploy Dash App with Ngrok
+# name: Deploy Dash App with Ngrok
 
-on:
-  push:
-    branches: [ main ]
-  workflow_dispatch:  # Allows manual triggering
+# on:
+#   push:
+#     branches: [ main ]
+#   workflow_dispatch:  # Allows manual triggering
 
-jobs:
-  deploy-dash:
-    runs-on: ubuntu-latest
+# jobs:
+#   deploy-dash:
+#     runs-on: ubuntu-latest
     
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+#     steps:
+#     - name: Checkout code
+#       uses: actions/checkout@v4
       
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.9'
+#     - name: Set up Python
+#       uses: actions/setup-python@v4
+#       with:
+#         python-version: '3.9'
         
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
+#     - name: Install dependencies
+#       run: |
+#         python -m pip install --upgrade pip
+#         pip install -r requirements.txt
         
-    - name: Install ngrok and authenticate
-      run: |
-        # Download and install ngrok
-        curl -s https://ngrok-agent.s3.amazonaws.com/ngrok.asc | sudo tee /etc/apt/trusted.gpg.d/ngrok.asc >/dev/null
-        echo "deb https://ngrok-agent.s3.amazonaws.com buster main" | sudo tee /etc/apt/sources.list.d/ngrok.list
-        sudo apt update && sudo apt install ngrok
+#     - name: Install ngrok and authenticate
+#       run: |
+#         # Download and install ngrok
+#         curl -s https://ngrok-agent.s3.amazonaws.com/ngrok.asc | sudo tee /etc/apt/trusted.gpg.d/ngrok.asc >/dev/null
+#         echo "deb https://ngrok-agent.s3.amazonaws.com buster main" | sudo tee /etc/apt/sources.list.d/ngrok.list
+#         sudo apt update && sudo apt install ngrok
         
-        # Add your ngrok auth token (get from https://dashboard.ngrok.com/get-started/your-authtoken)
-        ngrok authtoken ${{ secrets.NGROK_AUTHTOKEN }}
+#         # Add your ngrok auth token (get from https://dashboard.ngrok.com/get-started/your-authtoken)
+#         ngrok authtoken ${{ secrets.NGROK_AUTHTOKEN }}
         
-    - name: Run Dash app with ngrok
-      run: |
-        # Start ngrok tunnel in background
-        ngrok http 8050 > /dev/null &
+#     - name: Run Dash app with ngrok
+#       run: |
+#         # Start ngrok tunnel in background
+#         ngrok http 8050 > /dev/null &
         
-        # Wait a moment for ngrok to start
-        sleep 5
+#         # Wait a moment for ngrok to start
+#         sleep 5
         
-        # Get the public URL
-        NGROK_URL=$(curl -s http://localhost:4040/api/tunnels | jq -r '.tunnels[0].public_url')
-        echo "🌐 Your Dash app is available at: $NGROK_URL"
+#         # Get the public URL
+#         NGROK_URL=$(curl -s http://localhost:4040/api/tunnels | jq -r '.tunnels[0].public_url')
+#         echo "🌐 Your Dash app is available at: $NGROK_URL"
         
-        # Start the Dash app
-        python app.py &
+#         # Start the Dash app
+#         python app.py &
         
-        # Keep the job running for a while to test
-        sleep 300  # Runs for 5 minutes
+#         # Keep the job running for a while to test
+#         sleep 300  # Runs for 5 minutes
         
-    - name: Comment with deployment URL (optional)
-      if: always()
-      run: |
-        # This would require additional setup to comment on PRs/issues
-        echo "Deployment completed"
+#     - name: Comment with deployment URL (optional)
+#       if: always()
+#       run: |
+#         # This would require additional setup to comment on PRs/issues
+#         echo "Deployment completed"
